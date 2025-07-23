@@ -1,0 +1,18 @@
+{
+  "name": "consorcio",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "test": "ok"
+  },
+  "repository": {
+    "type": "git",
+    "url": "consorcio"
+  },
+  "keywords": [
+    "consorcio"
+  ],
+  "author": "ConradoFrasson",
+  "license": "ISC",
+  "description": ""
+}
