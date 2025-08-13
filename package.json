@@ -1,0 +1,66 @@
+{
+  "name": "consorcio",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "dependencies": {
+    "@replit/vite-plugin-cartographer": "^0.2.8",
+    "@tanstack/react-query": "^5.84.1",
+    "@vitejs/plugin-react": "^5.0.0",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.2",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "connect-mongo": "^4.6.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "drizzle-orm": "^0.44.4",
+    "drizzle-zod": "^0.8.2",
+    "embla-carousel-react": "^8.6.0",
+    "express": "^4.21.2",
+    "express-fileupload": "^1.4.0",
+    "express-session": "^1.17.2",
+    "input-otp": "^1.4.2",
+    "jsonwebtoken": "^9.0.0",
+    "lib": "^5.1.0",
+    "lucide-react": "^0.536.0",
+    "mongoose": "^6.8.0",
+    "multer": "^1.4.5-lts.1",
+    "nanoid": "^5.1.5",
+    "nodemon": "^2.0.22",
+    "radix-ui": "^1.4.2",
+    "react": "^19.1.1",
+    "react-day-picker": "^9.8.1",
+    "react-hook-form": "^7.62.0",
+    "react-resizable-panels": "^3.0.4",
+    "recharts": "^3.1.2",
+    "schema": "^0.2.1",
+    "tailwind": "^4.0.0",
+    "tailwind-merge": "^3.3.1",
+    "tanstack": "^1.0.3",
+    "utils": "^0.3.1",
+    "vaul": "^1.1.2",
+    "vite": "^7.0.6",
+    "wouter": "^3.7.1",
+    "zod": "^3.25.76"
+  },
+  "scripts": {
+    "test": "ok",
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "build": "echo 'No build step required'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "consorcio"
+  },
+  "keywords": [
+    "consorcio"
+  ],
+  "author": "ConradoFrasson",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@replit/vite-plugin-runtime-error-modal": "^0.0.3"
+  }
+}
