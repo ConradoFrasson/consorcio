@@ -23,15 +23,6 @@ export class MemStorage implements IStorage {
     this.users = new Map();
     this.cards = new Map();
 
-    // Create default admin user
-    const adminId = randomUUID();
-    const adminUser: User = {
-      id: adminId,
-      username: "admin@consorciocards.com",
-      password: "admin123", // In production, this should be hashed
-    };
-    this.users.set(adminId, adminUser);
-
     // Add sample consortium cards
     this.addSampleCards();
   }

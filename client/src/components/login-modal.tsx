@@ -17,6 +17,7 @@ interface LoginModalProps {
 
 export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
   const [, setLocation] = useLocation();
+  const [isRegisterMode, setIsRegisterMode] = useState(false);
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -24,23 +25,26 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
   });
   const { toast } = useToast();
 
-  const loginMutation = useMutation({
+  const authMutation = useMutation({
     mutationFn: async (data: { username: string; password: string }) => {
-      const response = await apiRequest("POST", "/api/auth/login", data);
+      const endpoint = isRegisterMode ? "/api/auth/register" : "/api/auth/login";
+      const response = await apiRequest("POST", endpoint, data);
       return response.json();
     },
     onSuccess: () => {
       toast({
-        title: "Login realizado com sucesso!",
+        title: isRegisterMode ? "Cadastro realizado com sucesso!" : "Login realizado com sucesso!",
         description: "Redirecionando para o painel administrativo...",
       });
       onClose();
       setLocation("/admin");
     },
-    onError: () => {
+    onError: (error: any) => {
       toast({
-        title: "Erro no login",
-        description: "Credenciais inválidas. Tente novamente.",
+        title: isRegisterMode ? "Erro no cadastro" : "Erro no login",
+        description: isRegisterMode 
+          ? "Falha ao criar conta. Verifique se o email já está em uso." 
+          : "Credenciais inválidas. Tente novamente.",
         variant: "destructive",
       });
     },
@@ -48,7 +52,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    loginMutation.mutate({
+    authMutation.mutate({
       username: formData.username,
       password: formData.password,
     });
@@ -58,12 +62,21 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
+  const handleModeSwitch = () => {
+    setIsRegisterMode(!isRegisterMode);
+    setFormData({
+      username: "",
+      password: "",
+      remember: false,
+    });
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center justify-between">
-            Login Administrativo
+            {isRegisterMode ? "Cadastro Administrativo" : "Login Administrativo"}
             <Button variant="ghost" size="icon" onClick={onClose}>
               <X className="h-4 w-4" />
             </Button>
@@ -78,7 +91,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
               type="email"
               value={formData.username}
               onChange={(e) => handleInputChange("username", e.target.value)}
-              placeholder="admin@consorciocards.com"
+              placeholder="seu-email@exemplo.com"
               required
             />
           </div>
@@ -107,16 +120,20 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
           <Button
             type="submit"
             className="w-full bg-primary-800 hover:bg-primary-700"
-            disabled={loginMutation.isPending}
+            disabled={authMutation.isPending}
           >
             <LogIn className="mr-2 h-4 w-4" />
-            {loginMutation.isPending ? "Entrando..." : "Entrar"}
+            {authMutation.isPending ? (isRegisterMode ? "Criando..." : "Entrando...") : (isRegisterMode ? "Criar Conta" : "Entrar")}
           </Button>
           
           <div className="text-center">
-            <a href="#" className="text-sm text-primary-800 hover:text-primary-600">
-              Esqueceu sua senha?
-            </a>
+            <button 
+              type="button"
+              onClick={handleModeSwitch}
+              className="text-sm text-primary-800 hover:text-primary-600"
+            >
+              {isRegisterMode ? "Já tem uma conta? Entre aqui" : "Não tem uma conta? Cadastre-se"}
+            </button>
           </div>
         </form>
       </DialogContent>
