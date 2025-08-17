@@ -1,5 +1,5 @@
 import { Router } from "express";
-import consortiumCardsController from "../controllers/consortiumCardsController.js"
+import consortiumCardsController from "../controllers/consortiumCardsControllers.js"
 
 const router = Router();
 

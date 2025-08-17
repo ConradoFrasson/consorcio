@@ -1,3 +1,7 @@
+import mongoose from "mongoose";
+
+const { Schema, model } = mongoose;
+
 const consortiumCardSchema = new Schema({
   administrador: {
     type: String,

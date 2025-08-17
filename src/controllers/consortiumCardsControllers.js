@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import ConsortiumCard from "../models/consortiumCardsModels.js";
 
 const store = async (req, res) => {
@@ -36,11 +37,10 @@ const show = async (req, res) => {
 
 const update = async (req, res) => {
   try {
-    const { text, title } = req.body;
+    const { administrador, tipo, credito, parcelas, prazo, entrada, taxa, fundo, saldo } = req.body;
 
     await ConsortiumCard.findByIdAndUpdate(req.params.id, {
-      text,
-      title
+      administrador, tipo, credito, parcelas, prazo, entrada, taxa, fundo, saldo
     }).exec();
 
     res.sendStatus(204);
