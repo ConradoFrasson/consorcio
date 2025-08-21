@@ -5,7 +5,7 @@ import { Button } from "../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
 import { ArrowLeft, Phone, Share2, Building } from "lucide-react";
-import type { ConsortiumCard } from "shared/schema";
+import type { ConsortiumCard } from "@shared/schema";
 
 export default function CardDetails() {
   const [, params] = useRoute("/card/:id");
