@@ -37,9 +37,31 @@ export const insertConsortiumCardSchema = createInsertSchema(consortiumCards).om
 
 export const updateConsortiumCardSchema = insertConsortiumCardSchema.partial();
 
-export type InsertUser = z.infer<typeof insertUserSchema>;
-export type User = typeof users.$inferSelect;
-export type ConsortiumCard = typeof consortiumCards.$inferSelect;
-export type InsertConsortiumCard = z.infer<typeof insertConsortiumCardSchema>;
-export type UpdateConsortiumCard = z.infer<typeof updateConsortiumCardSchema>;
+export type InsertUser = {
+  username: string;
+  password: string;
+}
+export type User = {
+  id: string;
+  username:string;
+  password: string;
+};
+export type ConsortiumCard = {
+  id: string;
+  administradora: string;
+  credito: string;
+  parcelas: string;
+  prazo: string;
+  entrada: string;
+  tipo: string;
+  telefone: string;
+  valorCarta: string;
+  taxaAdministradora: string;
+  fundoReserva: string;
+  saldoDevedor: string;
+  lance: string;
+  ativo: boolean;
+};
+export type InsertConsortiumCard = Omit<ConsortiumCard, 'id' | 'ativo'> & { ativo?: boolean };
+export type UpdateConsortiumCard = Partial<InsertConsortiumCard>;
 
