@@ -221,7 +221,7 @@ const ChartTooltipContent = React.forwardRef<
                         />
                         
                       )
-                    )}
+                    }
                     <div
                       className={cn(
                         "flex flex-1 justify-between leading-none",
@@ -296,10 +296,11 @@ const ChartLegendContent = React.forwardRef<
                 <itemConfig.icon />
               ) : (
                 <div
-                  className="h-2 w-2 shrink-0 rounded-[2px]"
-                  style={{
-                    backgroundColor: item.color,
-                  }}
+                  className={cn(
+                    "h-2 w-2 shrink-0 rounded-[2px] chart-legend-color",
+                    item.color ? `chart-legend-color--${item.color.replace("#", "")}` : ""
+                  )}
+                  data-color={item.color}
                 />
               )}
               {itemConfig?.label}

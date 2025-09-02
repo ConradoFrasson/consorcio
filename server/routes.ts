@@ -4,7 +4,7 @@ import { storage } from "./storage";
 import {
   insertConsortiumCardSchema,
   updateConsortiumCardSchema,
-} from "@shared/schema";
+} from "../shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Authentication endpoints

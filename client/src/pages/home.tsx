@@ -6,7 +6,7 @@ import LoginModal from "../components/login-modal";
 import { Button } from "../components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { Search } from "lucide-react";
-import type { ConsortiumCard } from "@shared/schema";
+import type { ConsortiumCard } from "../../../shared/schema";
 
 export default function Home() {
   const [showLogin, setShowLogin] = useState(false);

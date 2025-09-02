@@ -1,5 +1,5 @@
 import ConsortiumCard from "./consortium-card";
-import type { ConsortiumCard as ConsortiumCardType } from "@shared/schema";
+import type { ConsortiumCard as ConsortiumCardType } from "../../../shared/schema";
 
 interface CardGridProps {
   cards: ConsortiumCardType[];
@@ -54,7 +54,9 @@ export default function CardGrid({ cards, isLoading }: CardGridProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
       {cards.map((card) => (
-        <ConsortiumCard key={card.id} card={card} />
+        <div key={card.id}>
+          <ConsortiumCard card={card} />
+        </div>
       ))}
     </div>
   );
