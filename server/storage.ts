@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type ConsortiumCard, type InsertConsortiumCard, type UpdateConsortiumCard } from "../shared/schema";
+import { type User, type InsertUser, type ConsortiumCard, type InsertConsortiumCard, type UpdateConsortiumCard } from "../shared/schema.js";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
