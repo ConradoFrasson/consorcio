@@ -2,7 +2,7 @@ import { Link } from "wouter";
 import { Button } from "../components/ui/button";
 import { Badge } from "../components/ui/badge";
 import { Building, Phone } from "lucide-react";
-import type { ConsortiumCard as ConsortiumCardType } from "@shared/schema";
+import type { ConsortiumCard as ConsortiumCardType } from "../../../shared/schema";
 
 interface ConsortiumCardProps {
   card: ConsortiumCardType;

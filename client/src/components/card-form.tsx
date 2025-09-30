@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Save } from "lucide-react";
 import { apiRequest } from "../lib/queryClient";
 import { useToast } from "../hooks/use-toast";
-import { insertConsortiumCardSchema, type ConsortiumCard, type InsertConsortiumCard } from "@shared/schema";
+import { insertConsortiumCardSchema, type ConsortiumCard, type InsertConsortiumCard } from "../../../shared/schema";
 
 interface CardFormProps {
   card?: ConsortiumCard;

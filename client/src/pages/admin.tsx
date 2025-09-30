@@ -8,7 +8,7 @@ import { Badge } from "../components/ui/badge";
 import { Plus, Edit, Trash2 } from "lucide-react";
 import { apiRequest, queryClient } from "../lib/queryClient";
 import { useToast } from "../hooks/use-toast";
-import type { ConsortiumCard } from "@shared/schema";
+import type { ConsortiumCard } from "../../../shared/schema";
 export default function Admin() {
   const [activeTab, setActiveTab] = useState<"cards" | "add" | "edit">("cards");
   const [editingCard, setEditingCard] = useState<ConsortiumCard | null>(null);

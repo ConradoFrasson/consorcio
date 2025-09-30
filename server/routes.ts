@@ -1,6 +1,6 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
-import { storage } from "./storage";
+import { storage } from "./storage.js";
 import {
   insertConsortiumCardSchema,
   updateConsortiumCardSchema,
@@ -8,9 +8,7 @@ import {
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { authMiddleware } from "./auth.middleware";
-
 const JWT_SECRET = "your-super-secret-key-that-should-be-in-env-vars";
-
 export async function registerRoutes(app: Express): Promise<Server> {
   // Authentication endpoints
   app.post("/api/auth/register", async (req, res) => {

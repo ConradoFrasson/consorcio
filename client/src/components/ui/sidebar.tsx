@@ -137,15 +137,8 @@ const SidebarProvider = React.forwardRef<
       <SidebarContext.Provider value={contextValue}>
         <TooltipProvider delayDuration={0}>
           <div
-            style={
-              {
-                "--sidebar-width": SIDEBAR_WIDTH,
-                "--sidebar-width-icon": SIDEBAR_WIDTH_ICON,
-                ...style,
-              } as React.CSSProperties
-            }
             className={cn(
-              "group/sidebar-wrapper flex min-h-svh w-full has-[[data-variant=inset]]:bg-sidebar",
+              "group/sidebar-wrapper flex min-h-svh w-full has-[[data-variant=inset]]:bg-sidebar sidebar-custom-width",
               className
             )}
             ref={ref}
@@ -564,13 +557,19 @@ const SidebarMenuButton = React.forwardRef<
     const Comp = asChild ? Slot : "button"
     const { isMobile, state } = useSidebar()
 
+    // Ensure variant and size are of correct type
+    const safeVariant: "default" | "outline" | undefined =
+      variant === "default" || variant === "outline" ? variant : "default"
+    const safeSize: "default" | "sm" | "lg" | undefined =
+      size === "default" || size === "sm" || size === "lg" ? size : "default"
+
     const button = (
       <Comp
         ref={ref}
         data-sidebar="menu-button"
-        data-size={size}
+        data-size={safeSize}
         data-active={isActive}
-        className={cn(sidebarMenuButtonVariants({ variant, size }), className)}
+        className={cn(sidebarMenuButtonVariants({ variant: safeVariant, size: safeSize }), className)}
         {...props}
       />
     )
