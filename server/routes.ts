@@ -4,8 +4,11 @@ import { storage } from "./storage.js";
 import {
   insertConsortiumCardSchema,
   updateConsortiumCardSchema,
-} from "../shared/schema.js";
-
+} from "../shared/schema";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import { authMiddleware } from "./auth.middleware";
+const JWT_SECRET = "your-super-secret-key-that-should-be-in-env-vars";
 export async function registerRoutes(app: Express): Promise<Server> {
   // Authentication endpoints
   app.post("/api/auth/register", async (req, res) => {
@@ -49,13 +52,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const user = await storage.getUserByUsername(username);
 
-      if (!user || user.password !== password) {
+      if (!user || !bcrypt.compareSync(password, user.password)) {
         return res.status(401).json({ message: "Invalid credentials" });
       }
 
-      // In a real app, you'd use proper session management
+      const token = jwt.sign({ userId: user.id }, JWT_SECRET, {
+        expiresIn: "1h",
+      });
+
       res.json({
         success: true,
+        token,
         user: { id: user.id, username: user.username },
       });
     } catch (error) {
@@ -88,7 +95,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/cards", async (req, res) => {
+  app.post("/api/cards", authMiddleware, async (req, res) => {
     try {
       const validatedData = insertConsortiumCardSchema.parse(req.body);
       const card = await storage.createCard(validatedData);
@@ -102,7 +109,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/cards/:id", async (req, res) => {
+  app.put("/api/cards/:id", authMiddleware, async (req, res) => {
     try {
       const { id } = req.params;
       const validatedData = updateConsortiumCardSchema.parse(req.body);
@@ -122,7 +129,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/cards/:id", async (req, res) => {
+  app.delete("/api/cards/:id", authMiddleware, async (req, res) => {
     try {
       const { id } = req.params;
       const deleted = await storage.deleteCard(id);
@@ -138,7 +145,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin endpoints - get all cards including inactive
-  app.get("/api/admin/cards", async (req, res) => {
+  app.get("/api/admin/cards", authMiddleware, async (req, res) => {
     try {
       const cards = await storage.getAllCards();
       res.json(cards);
