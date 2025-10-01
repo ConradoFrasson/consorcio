@@ -1,16 +1,15 @@
-import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, boolean } from "drizzle-orm/pg-core";
+import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
-export const users = pgTable("users", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+export const users = sqliteTable("users", {
+  id: text("id").primaryKey(),
   username: text("username").notNull().unique(),
   password: text("password").notNull(),
 });
 
-export const consortiumCards = pgTable("consortium_cards", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+export const consortiumCards = sqliteTable("consortium_cards", {
+  id: text("id").primaryKey(),
   administradora: text("administradora").notNull(),
   credito: text("credito").notNull(), // Valor do bem
   parcelas: text("parcelas").notNull(),
@@ -23,7 +22,7 @@ export const consortiumCards = pgTable("consortium_cards", {
   fundoReserva: text("fundo_reserva").notNull(),
   saldoDevedor: text("saldo_devedor").notNull(),
   lance: text("lance").notNull(),
-  ativo: boolean("ativo").notNull().default(true),
+  ativo: integer("ativo", { mode: "boolean" }).notNull().default(true),
 });
 
 export const insertUserSchema = createInsertSchema(users).pick({
@@ -64,4 +63,3 @@ export type ConsortiumCard = {
 };
 export type InsertConsortiumCard = Omit<ConsortiumCard, 'id' | 'ativo'> & { ativo?: boolean };
 export type UpdateConsortiumCard = Partial<InsertConsortiumCard>;
-

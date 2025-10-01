@@ -1,140 +1,58 @@
-import { type User, type InsertUser, type ConsortiumCard, type InsertConsortiumCard, type UpdateConsortiumCard } from "../shared/schema";
+import { type User, type InsertUser, type ConsortiumCard, type InsertConsortiumCard, type UpdateConsortiumCard, users, consortiumCards } from "../shared/schema";
+import { IStorage } from "./storage.interface";
+import { db } from "./drizzle";
+import { eq } from "drizzle-orm";
 import { randomUUID } from "crypto";
+import bcrypt from "bcryptjs";
 
-export interface IStorage {
-  getUser(id: string): Promise<User | undefined>;
-  getUserByUsername(username: string): Promise<User | undefined>;
-  createUser(user: InsertUser): Promise<User>;
-
-  // Consortium Cards methods
-  getAllCards(): Promise<ConsortiumCard[]>;
-  getActiveCards(): Promise<ConsortiumCard[]>;
-  getCardById(id: string): Promise<ConsortiumCard | undefined>;
-  createCard(card: InsertConsortiumCard): Promise<ConsortiumCard>;
-  updateCard(id: string, updates: UpdateConsortiumCard): Promise<ConsortiumCard | undefined>;
-  deleteCard(id: string): Promise<boolean>;
-}
-
-export class MemStorage implements IStorage {
-  private users: Map<string, User>;
-  private cards: Map<string, ConsortiumCard>;
-
-  constructor() {
-    this.users = new Map();
-    this.cards = new Map();
-
-    // Add sample consortium cards
-    this.addSampleCards();
-  }
-
-  private addSampleCards() {
-    const sampleCards: InsertConsortiumCard[] = [
-      {
-        administradora: "Contempla",
-        credito: "R$ 180.000",
-        parcelas: "36x de R$ 850",
-        prazo: "36 meses",
-        entrada: "R$ 45.000",
-        tipo: "contemplado",
-        telefone: "(11) 99999-1234",
-        valorCarta: "R$ 142.000",
-        taxaAdministradora: "19,5% a.a.",
-        fundoReserva: "R$ 8.500",
-        saldoDevedor: "R$ 32.450",
-        lance: "R$ 15.000",
-        ativo: true,
-      },
-      {
-        administradora: "Rodobens",
-        credito: "R$ 120.000",
-        parcelas: "60x de R$ 380",
-        prazo: "60 meses",
-        entrada: "R$ 12.000",
-        tipo: "nao-contemplado",
-        telefone: "(11) 98888-5678",
-        valorCarta: "R$ 98.000",
-        taxaAdministradora: "21,0% a.a.",
-        fundoReserva: "R$ 6.200",
-        saldoDevedor: "R$ 45.800",
-        lance: "R$ 8.000",
-        ativo: true,
-      },
-      {
-        administradora: "Caixa Consórcios",
-        credito: "R$ 250.000",
-        parcelas: "48x de R$ 1.200",
-        prazo: "48 meses",
-        entrada: "R$ 75.000",
-        tipo: "contemplado",
-        telefone: "(11) 97777-9876",
-        valorCarta: "R$ 195.000",
-        taxaAdministradora: "18,5% a.a.",
-        fundoReserva: "R$ 12.500",
-        saldoDevedor: "R$ 28.200",
-        lance: "R$ 22.000",
-        ativo: true,
-      },
-    ];
-
-    sampleCards.forEach(card => {
-      this.createCard(card);
-    });
-  }
-
+export class DrizzleStorage implements IStorage {
   async getUser(id: string): Promise<User | undefined> {
-    return this.users.get(id);
+    const result = await db.select().from(users).where(eq(users.id, id));
+    return result[0];
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
+    const result = await db.select().from(users).where(eq(users.username, username));
+    return result[0];
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
     const id = randomUUID();
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
-    return user;
+    const hashedPassword = bcrypt.hashSync(insertUser.password, 8);
+    const user = { username: insertUser.username, password: hashedPassword, id };
+    const result = await db.insert(users).values(user).returning();
+    return result[0];
   }
 
   async getAllCards(): Promise<ConsortiumCard[]> {
-    return Array.from(this.cards.values());
+    return db.select().from(consortiumCards);
   }
 
   async getActiveCards(): Promise<ConsortiumCard[]> {
-    return Array.from(this.cards.values()).filter(card => card.ativo);
+    return db.select().from(consortiumCards).where(eq(consortiumCards.ativo, true));
   }
 
   async getCardById(id: string): Promise<ConsortiumCard | undefined> {
-    return this.cards.get(id);
+    const result = await db.select().from(consortiumCards).where(eq(consortiumCards.id, id));
+    return result[0];
   }
 
   async createCard(insertCard: InsertConsortiumCard): Promise<ConsortiumCard> {
     const id = randomUUID();
-    const card: ConsortiumCard = { 
-      ...insertCard, 
-      id,
-      ativo: insertCard.ativo ?? true
-    };
-    this.cards.set(id, card);
-    return card;
+    const card = { ...insertCard, id, ativo: insertCard.ativo ?? true };
+    const result = await db.insert(consortiumCards).values(card).returning();
+    return result[0];
   }
 
   async updateCard(id: string, updates: UpdateConsortiumCard): Promise<ConsortiumCard | undefined> {
-    const existingCard = this.cards.get(id);
-    if (!existingCard) {
-      return undefined;
-    }
-
-    const updatedCard: ConsortiumCard = { ...existingCard, ...updates };
-    this.cards.set(id, updatedCard);
-    return updatedCard;
+    const result = await db.update(consortiumCards).set(updates).where(eq(consortiumCards.id, id)).returning();
+    return result[0];
   }
 
   async deleteCard(id: string): Promise<boolean> {
-    return this.cards.delete(id);
+    const result = await db.delete(consortiumCards).where(eq(consortiumCards.id, id)).returning();
+    return result.length > 0;
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DrizzleStorage();
