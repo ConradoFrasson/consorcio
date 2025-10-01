@@ -5,7 +5,7 @@ import {
   insertConsortiumCardSchema,
   updateConsortiumCardSchema,
 } from "../shared/schema";
-import bcrypt from "bcryptjs";
+import * as bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { authMiddleware } from "./auth.middleware";
 const JWT_SECRET = "your-super-secret-key-that-should-be-in-env-vars";
