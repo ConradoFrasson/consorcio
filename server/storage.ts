@@ -3,7 +3,7 @@ import { IStorage } from "./storage.interface";
 import { db } from "./drizzle";
 import { eq } from "drizzle-orm";
 import { randomUUID } from "crypto";
-import bcrypt from "bcryptjs";
+import * as bcrypt from "bcryptjs";
 
 export class DrizzleStorage implements IStorage {
   async getUser(id: string): Promise<User | undefined> {
