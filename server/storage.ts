@@ -1,6 +1,6 @@
-import { type User, type InsertUser, type ConsortiumCard, type InsertConsortiumCard, type UpdateConsortiumCard, users, consortiumCards } from "../shared/schema";
-import { IStorage } from "./storage.interface";
-import { db } from "./drizzle";
+import { type User, type InsertUser, type ConsortiumCard, type InsertConsortiumCard, type UpdateConsortiumCard, users, consortiumCards } from "../shared/schema.js";
+import { IStorage } from "./storage.interface.js";
+import { db } from "./drizzle.js";
 import { eq } from "drizzle-orm";
 import { randomUUID } from "crypto";
 import * as bcrypt from "bcryptjs";
@@ -18,18 +18,18 @@ export class DrizzleStorage implements IStorage {
 
   async createUser(insertUser: InsertUser): Promise<User> {
     const id = randomUUID();
-    const hashedPassword = bcrypt.hashSync(insertUser.password, 8);
+    const hashedPassword = await bcrypt.hash(insertUser.password, 8);
     const user = { username: insertUser.username, password: hashedPassword, id };
     const result = await db.insert(users).values(user).returning();
     return result[0];
   }
 
   async getAllCards(): Promise<ConsortiumCard[]> {
-    return db.select().from(consortiumCards);
+    return await db.select().from(consortiumCards);
   }
 
   async getActiveCards(): Promise<ConsortiumCard[]> {
-    return db.select().from(consortiumCards).where(eq(consortiumCards.ativo, true));
+    return await db.select().from(consortiumCards).where(eq(consortiumCards.ativo, true));
   }
 
   async getCardById(id: string): Promise<ConsortiumCard | undefined> {
