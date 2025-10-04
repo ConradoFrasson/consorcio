@@ -179,7 +179,10 @@ function useToast() {
         listeners.splice(index, 1)
       }
     }
-  }, [state])
+    // subscribe once on mount and cleanup on unmount
+    // do not depend on state to avoid re-subscribing each render
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return {
     ...state,
