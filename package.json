@@ -31,7 +31,6 @@
     "mongoose": "^6.8.0",
     "multer": "^1.4.5-lts.1",
     "nanoid": "^5.1.5",
-    "node": "^24.6.0",
     "nodemon": "^2.0.22",
     "radix-ui": "^1.4.2",
     "react": "^19.1.1",
@@ -50,6 +49,9 @@
     "vite": "^7.0.6",
     "wouter": "^3.7.1",
     "zod": "^4.1.11"
+  },
+  "engines": {
+    "node": ">=22 <23"
   },
   "scripts": {
     "test": "ok",
