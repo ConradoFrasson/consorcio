@@ -8,7 +8,7 @@ import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Checkbox } from "../components/ui/checkbox";
 import { LogIn, X } from "lucide-react";
-import { apiRequest } from "../lib/queryClient";
+import { apiRequest, setAuthToken } from "../lib/queryClient";
 import { useToast } from "../hooks/use-toast";
 
 interface LoginModalProps {
@@ -32,7 +32,10 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
       const response = await apiRequest("POST", endpoint, data);
       return response.json();
     },
-    onSuccess: () => {
+    onSuccess: (data: any) => {
+      if (data?.token) {
+        setAuthToken(data.token);
+      }
       toast({
         title: isRegisterMode ? "Cadastro realizado com sucesso!" : "Login realizado com sucesso!",
         description: "Redirecionando para o painel administrativo...",
