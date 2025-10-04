@@ -1,7 +1,7 @@
 import { type Request, type Response, type NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
-const JWT_SECRET = "your-super-secret-key-that-should-be-in-env-vars";
+const JWT_SECRET = process.env.JWT_SECRET || "your-super-secret-key-that-should-be-in-env-vars";
 
 export interface AuthenticatedRequest extends Request {
   user?: { userId: string };
