@@ -32,7 +32,12 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
       const response = await apiRequest("POST", endpoint, data);
       return response.json();
     },
-    onSuccess: () => {
+    onSuccess: (data: any) => {
+      // Store JWT token if login was successful
+      if (!isRegisterMode && data.token) {
+        localStorage.setItem('authToken', data.token);
+      }
+      
       toast({
         title: isRegisterMode ? "Cadastro realizado com sucesso!" : "Login realizado com sucesso!",
         description: "Redirecionando para o painel administrativo...",

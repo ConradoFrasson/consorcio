@@ -1,67 +1,117 @@
-import mongoose from "mongoose";
 import ConsortiumCard from "../models/consortiumCardsModels.js";
 
+// Create a new consortium card
 const store = async (req, res) => {
   try {
-    const { administrador, tipo, credito, parcelas, prazo, entrada, taxa, fundo, saldo } = req.body;
+    const cardData = req.body;
+    
+    // Validate required fields
+    const requiredFields = [
+      'administradora', 'credito', 'parcelas', 'prazo', 'entrada', 
+      'tipo', 'telefone', 'valorCarta', 'taxaAdministradora', 
+      'fundoReserva', 'saldoDevedor', 'lance'
+    ];
+    
+    for (const field of requiredFields) {
+      if (!cardData[field]) {
+        return res.status(400).json({ 
+          message: `Field '${field}' is required` 
+        });
+      }
+    }
 
-    await ConsortiumCard.create({ administrador, tipo, credito, parcelas, prazo, entrada, taxa, fundo, saldo });
-
-    res.sendStatus(204);
+    const newCard = await ConsortiumCard.create(cardData);
+    res.status(201).json(newCard);
   } catch (error) {
-    res.status(500).send(error.message);
+    console.error('Error creating card:', error);
+    res.status(500).json({ message: error.message });
   }
 };
 
+// Get all active consortium cards
 const index = async (req, res) => {
   try {
-    const content = await ConsortiumCard.find().exec();
-
-    res.json(content);
+    const cards = await ConsortiumCard.find({ ativo: true })
+      .sort({ createdAt: -1 })
+      .exec();
+    
+    res.json(cards);
   } catch (error) {
-    res.status(500).send(error.message);
+    console.error('Error fetching cards:', error);
+    res.status(500).json({ message: error.message });
   }
 };
 
+// Get all consortium cards (including inactive) - for admin
+const getAllCards = async (req, res) => {
+  try {
+    const cards = await ConsortiumCard.find()
+      .sort({ createdAt: -1 })
+      .exec();
+    
+    res.json(cards);
+  } catch (error) {
+    console.error('Error fetching all cards:', error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Get a single consortium card by ID
 const show = async (req, res) => {
   try {
-    const content = await ConsortiumCard.findById(req.params.id)
-      .populate("maintenances")
-      .exec();
-
-    res.json(content);
+    const card = await ConsortiumCard.findById(req.params.id).exec();
+    
+    if (!card) {
+      return res.status(404).json({ message: "Card not found" });
+    }
+    
+    res.json(card);
   } catch (error) {
-    res.status(500).send(error.message);
+    console.error('Error fetching card:', error);
+    res.status(500).json({ message: error.message });
   }
 };
 
+// Update a consortium card
 const update = async (req, res) => {
   try {
-    const { administrador, tipo, credito, parcelas, prazo, entrada, taxa, fundo, saldo } = req.body;
-
-    await ConsortiumCard.findByIdAndUpdate(req.params.id, {
-      administrador, tipo, credito, parcelas, prazo, entrada, taxa, fundo, saldo
-    }).exec();
-
-    res.sendStatus(204);
+    const updatedCard = await ConsortiumCard.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    ).exec();
+    
+    if (!updatedCard) {
+      return res.status(404).json({ message: "Card not found" });
+    }
+    
+    res.json(updatedCard);
   } catch (error) {
-    res.status(500).send(error.message);
+    console.error('Error updating card:', error);
+    res.status(500).json({ message: error.message });
   }
 };
 
+// Delete a consortium card
 const destroy = async (req, res) => {
   try {
-    await ConsortiumCard.findByIdAndDelete(req.params.id).exec();
-
-    res.sendStatus(204);
+    const deletedCard = await ConsortiumCard.findByIdAndDelete(req.params.id).exec();
+    
+    if (!deletedCard) {
+      return res.status(404).json({ message: "Card not found" });
+    }
+    
+    res.json({ success: true, message: "Card deleted successfully" });
   } catch (error) {
-    res.status(500).send(error.message);
+    console.error('Error deleting card:', error);
+    res.status(500).json({ message: error.message });
   }
 };
 
 export default {
   store,
   index,
+  getAllCards,
   show,
   update,
   destroy,

@@ -1,6 +1,6 @@
-import { type User, type InsertUser, type ConsortiumCard, type InsertConsortiumCard, type UpdateConsortiumCard, users, consortiumCards } from "../shared/schema";
-import { IStorage } from "./storage.interface";
-import { db } from "./drizzle";
+import { type User, type InsertUser, type ConsortiumCard, type InsertConsortiumCard, type UpdateConsortiumCard, users, consortiumCards } from "../shared/schema.js";
+import { IStorage } from "./storage.interface.js";
+import { db } from "./drizzle.js";
 import { eq } from "drizzle-orm";
 import { randomUUID } from "crypto";
 import * as bcrypt from "bcryptjs";
