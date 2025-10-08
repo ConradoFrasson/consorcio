@@ -23,6 +23,14 @@ export default function Home() {
   const filteredCards = cards.filter(card => {
     if (filters.administradora !== "all" && card.administradora !== filters.administradora) return false;
     if (filters.tipo !== "all" && card.tipo !== filters.tipo) return false;
+    if (filters.credito !== "all") {
+      const creditValue = parseInt(card.credito.replace(/[^\d]/g, ''));
+      
+      if (filters.credito === "ate-50k" && creditValue > 50000) return false;
+      if (filters.credito === "50k-100k" && (creditValue < 50000 || creditValue > 100000)) return false;
+      if (filters.credito === "acima-100k" && creditValue <= 100000) return false;
+    }
+    
     return true;
   });
 
