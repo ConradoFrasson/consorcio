@@ -4,11 +4,11 @@ import { storage } from "./storage.js";
 import {
   insertConsortiumCardSchema,
   updateConsortiumCardSchema,
-} from "../shared/schema";
+} from "../shared/schema.js";
 import * as bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { authMiddleware } from "./auth.middleware";
-const JWT_SECRET = "your-super-secret-key-that-should-be-in-env-vars";
+import { authMiddleware } from "./auth.middleware.js";
+const JWT_SECRET = process.env.JWT_SECRET || "fallback-secret-change-this";
 export async function registerRoutes(app: Express): Promise<Server> {
   // Authentication endpoints
   app.post("/api/auth/register", async (req, res) => {
@@ -52,7 +52,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const user = await storage.getUserByUsername(username);
 
-      if (!user || !bcrypt.compareSync(password, user.password)) {
+      if (!user || !(await bcrypt.compare(password, user.password))) {
         return res.status(401).json({ message: "Invalid credentials" });
       }
 
