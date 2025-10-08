@@ -32,7 +32,16 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
       const response = await apiRequest("POST", endpoint, data);
       return response.json();
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      // Save to localStorage if "remember me" is checked
+      if (formData.remember) {
+        localStorage.setItem("authUser", JSON.stringify({ 
+          username: formData.username,
+          loggedIn: true 
+        }));
+      } else {
+        localStorage.removeItem("authUser");
+      }
       toast({
         title: isRegisterMode ? "Cadastro realizado com sucesso!" : "Login realizado com sucesso!",
         description: "Redirecionando para o painel administrativo...",
