@@ -53,8 +53,8 @@
   },
   "scripts": {
     "test": "ok",
-    "start": "node dist/server/index.js",
-    "dev": "nodemon --watch server --ext ts --exec \"npm run build && npm start\"",
+    "start": "NODE_ENV=production node dist/server/index.js",
+    "dev": "NODE_ENV=development nodemon --watch server --ext ts --exec \"npm run build && npm start\"",
     "build": "npm run build:server && npm run build:client",
     "build:server": "tsc --project tsconfig.server.json",
     "build:client": "vite build"
